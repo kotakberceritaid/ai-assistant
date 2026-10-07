@@ -1,0 +1,17 @@
+#aifa-root{all:initial;font-family:Inter,system-ui,Arial,sans-serif}
+#aifa-bubble{position:fixed;right:20px;bottom:24px;width:58px;height:58px;border-radius:50%;z-index:2147483647;
+display:grid;place-items:center;color:#fff;font:700 24px system-ui;cursor:pointer;
+background:linear-gradient(135deg,#7954ff,#1cc8ec);box-shadow:0 8px 30px rgba(70,80,255,.45);
+border:2px solid rgba(255,255,255,.2)}
+#aifa-panel{position:fixed;right:18px;bottom:94px;width:330px;max-width:calc(100vw - 36px);z-index:2147483647;
+background:rgba(11,12,24,.97);color:#fff;border:1px solid rgba(255,255,255,.13);border-radius:20px;
+padding:14px;box-shadow:0 20px 70px rgba(0,0,0,.55);backdrop-filter:blur(18px);
+font:14px system-ui;display:none}
+#aifa-panel.open{display:block}
+.aifa-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px}
+.aifa-close{background:none!important;color:#aaa!important;border:0!important;font-size:20px!important;cursor:pointer}
+.aifa-action{width:100%;padding:11px;margin:5px 0;border-radius:11px;border:1px solid #292c49;
+background:#17182b;color:#fff;text-align:left;cursor:pointer}
+.aifa-action:hover{border-color:#705cff}
+#aifa-result{margin-top:9px;background:#090a14;border-radius:11px;padding:10px;color:#c4c7d8;font-size:12px;line-height:1.5;max-height:220px;overflow:auto}
+.aifa-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#32df8b;box-shadow:0 0 10px #32df8b;margin-right:6px}

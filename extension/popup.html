@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI Assistant</title><style>
+body{width:310px;margin:0;padding:16px;background:#0b0c17;color:#fff;font:14px system-ui}
+h3{margin:0 0 12px}.muted{color:#a9acc0;font-size:12px;line-height:1.5}
+input{width:100%;box-sizing:border-box;padding:11px;border-radius:10px;border:1px solid #30334b;background:#151627;color:white;margin:7px 0}
+button{width:100%;padding:11px;border:0;border-radius:10px;background:#7357ff;color:#fff;font-weight:700;margin-top:8px}
+#msg{font-size:12px;color:#a9acc0;margin-top:10px}
+</style></head><body>
+<h3>✦ AI Floating Assistant</h3>
+<div class="muted">Masukkan URL target yang kamu miliki/berwenang mengujinya.</div>
+<input id="api" placeholder="https://projek-vercelmu.vercel.app"
+    style="width:100%;box-sizing:border-box;margin-bottom:8px;padding:8px" />
+    <input id="url" placeholder="https://docs.google.com/forms/...">
+<button id="save">Aktifkan di URL ini</button>
+<button id="off" style="background:#22243a">Nonaktifkan di halaman ini</button>
+<div id="msg"></div>
+<script src="popup.js"></script></body></html>
