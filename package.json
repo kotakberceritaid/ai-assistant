@@ -1,0 +1,9 @@
+{
+  "name": "ai-floating-assistant-vercel",
+  "version": "2.0.0",
+  "private": true,
+  "description": "AI Floating Assistant using Nexray API on Vercel",
+  "engines": {
+    "node": ">=18.x"
+  }
+}
