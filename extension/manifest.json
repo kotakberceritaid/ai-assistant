@@ -1,0 +1,32 @@
+{
+  "manifest_version": 3,
+  "name": "AI Floating Assistant",
+  "version": "1.0.0",
+  "description": "Floating AI assistant for pages you own or are authorized to test.",
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "action": {
+    "default_title": "AI Floating Assistant",
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "css": [
+        "content.css"
+      ],
+      "run_at": "document_idle"
+    }
+  ]
+}
