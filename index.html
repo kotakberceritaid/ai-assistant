@@ -1,0 +1,150 @@
+
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#111327">
+<title>Nexray AI Assistant</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#101225;color:#f5f5ff;font:16px Arial,sans-serif}
+main{max-width:700px;margin:auto;padding:20px 14px}
+header{padding:16px 0}
+h1{margin:0 0 8px;font-size:27px}
+p{color:#b8bdd6;line-height:1.5}
+nav{display:flex;gap:8px;flex-wrap:wrap}
+nav button,button{border:0;border-radius:12px;padding:12px;background:#7668ff;color:white;font-weight:bold}
+nav button{background:#292c47}
+nav button.active{background:#7668ff}
+section{margin-top:14px;background:#1b1e35;padding:16px;border-radius:18px}
+label{display:block;margin:12px 0 6px}
+textarea,input,select{width:100%;padding:12px;border-radius:10px;border:1px solid #44496a;background:#111327;color:white;font:inherit}
+textarea{min-height:100px;resize:vertical}
+.action{width:100%;margin-top:12px}
+.result{white-space:pre-wrap;overflow-wrap:anywhere;background:#111327;border-radius:10px;padding:12px;margin-top:12px;line-height:1.6}
+.status{font-size:13px;color:#8de9d8;margin-top:10px}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<main>
+<header>
+<h1>✦ Nexray AI</h1>
+<p>Asisten AI langsung dari HP kamu.</p>
+</header>
+
+<nav>
+<button class="active" data-show="chat">Tanya AI</button>
+<button data-show="answer">Bantu Soal</button>
+<button data-show="analyze">Analisis</button>
+</nav>
+
+<section id="chat">
+<h2>💬 Tanya AI</h2>
+<label for="message">Pertanyaan kamu</label>
+<textarea id="message" placeholder="Tanyakan apa saja..."></textarea>
+<button class="action" onclick="sendChat()">Kirim pertanyaan</button>
+<div id="chatStatus" class="status"></div>
+<div id="chatResult" class="result hidden"></div>
+</section>
+
+<section id="answer" class="hidden">
+<h2>📝 Bantu Soal</h2>
+<label for="question">Pertanyaan</label>
+<textarea id="question" placeholder="Masukkan soal..."></textarea>
+<label for="a">Opsi A</label><input id="a" placeholder="Jawaban A">
+<label for="b">Opsi B</label><input id="b" placeholder="Jawaban B">
+<label for="c">Opsi C</label><input id="c" placeholder="Jawaban C (opsional)">
+<label for="d">Opsi D</label><input id="d" placeholder="Jawaban D (opsional)">
+<button class="action" onclick="sendAnswer()">Bantu jawab</button>
+<div id="answerStatus" class="status"></div>
+<div id="answerResult" class="result hidden"></div>
+</section>
+
+<section id="analyze" class="hidden">
+<h2>⚡ Analisis</h2>
+<label for="source">Teks atau tautan</label>
+<textarea id="source" placeholder="Tempel teks atau tautan..."></textarea>
+<label for="kind">Pilih tindakan</label>
+<select id="kind">
+<option value="ringkas">Ringkas isi</option>
+<option value="jelaskan">Jelaskan sederhana</option>
+<option value="poin">Poin penting</option>
+<option value="soal">Buat latihan soal</option>
+</select>
+<button class="action" onclick="sendAnalysis()">Mulai analisis</button>
+<div id="analyzeStatus" class="status"></div>
+<div id="analyzeResult" class="result hidden"></div>
+</section>
+<p style="font-size:12px">Periksa kembali jawaban AI. Jangan masukkan kata sandi atau data pribadi.</p>
+</main>
+
+<script>
+document.querySelectorAll("nav button").forEach(btn=>{
+  btn.onclick=()=>{
+    document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("active",b===btn));
+    ["chat","answer","analyze"].forEach(id=>{
+      document.getElementById(id).classList.toggle("hidden",id!==btn.dataset.show);
+    });
+  };
+});
+
+async function requestAI(path,payload,statusId,resultId,button){
+  const status=document.getElementById(statusId);
+  const result=document.getElementById(resultId);
+  status.textContent="Sedang memproses...";
+  result.classList.add("hidden");
+  button.disabled=true;
+  try{
+    const response=await fetch(path,{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify(payload)
+    });
+    const data=await response.json();
+    if(!response.ok) throw new Error(data.error||"Permintaan gagal.");
+    result.textContent=data.answer||"AI tidak memberikan jawaban.";
+    result.classList.remove("hidden");
+    status.textContent="Selesai!";
+  }catch(err){
+    result.textContent="Gagal: "+err.message+
+      "\nCoba lagi. Jika terus gagal, periksa API Nexray dan deployment Vercel.";
+    result.classList.remove("hidden");
+    status.textContent="Terjadi kendala.";
+  }finally{
+    button.disabled=false;
+  }
+}
+
+function sendChat(){
+  const text=document.getElementById("message").value.trim();
+  if(!text){document.getElementById("chatStatus").textContent="Isi pertanyaan dulu.";return;}
+  requestAI("/api/chat",{text},"chatStatus","chatResult",event.currentTarget);
+}
+
+function sendAnswer(){
+  const question=document.getElementById("question").value.trim();
+  const options=[
+    ["A",document.getElementById("a").value],
+    ["B",document.getElementById("b").value],
+    ["C",document.getElementById("c").value],
+    ["D",document.getElementById("d").value]
+  ].filter(x=>x[1].trim()).map(x=>x[0]+". "+x[1].trim());
+  if(!question||options.length<2){
+    document.getElementById("answerStatus").textContent="Isi soal dan minimal dua opsi.";
+    return;
+  }
+  requestAI("/api/auto-answer",{question,options},"answerStatus","answerResult",event.currentTarget);
+}
+
+function sendAnalysis(){
+  const text=document.getElementById("source").value.trim();
+  if(!text){document.getElementById("analyzeStatus").textContent="Isi teks dulu.";return;}
+  requestAI("/api/analyze",{text,action:document.getElementById("kind").value},
+    "analyzeStatus","analyzeResult",event.currentTarget);
+}
+</script>
+</body>
+  </html>
+  
